@@ -1,0 +1,124 @@
+import random
+
+# Define character elements
+races = [
+    'Human', 'Elf', 'Dwarf', 'Gnome', 'Halfling', 
+    'Half-Orc', 'Half-Elf', 'Half-Ogre'
+]
+
+classes = [
+    'Fighter', 'Mage', 'Thief', 'Technologist', 'Ranger', 
+    'Priest', 'Monk'
+]
+
+backgrounds = {
+    "None": {},
+    "Apprentice": {"Intelligence": +1, "Strength": -1},
+    "Acolyte": {"Willpower": +1, "Dexterity": -1},
+    "Assassin": {"Dexterity": +2, "Charisma": -2},
+    "Noble": {"Charisma": +2, "Strength": -2},
+    "Laborer": {"Strength": +1, "Intelligence": -1},
+    "Charlatan": {"Beauty": +2, "Perception": -1, "Willpower": -1},
+    "Bounty Hunter": {"Perception": +1, "Charisma": -1},
+    "Scholar": {"Intelligence": +1, "Constitution": -1},
+    "Technophobic": {"Tech Aptitude": 0, "Magic Aptitude": +2, "Perception": -2},
+    "Night Mage": {"Magic Aptitude (Night)": +2, "Magic Aptitude (Day)": -2},
+    "Street Urchin": {"Dexterity": +1, "Prowling": +1, "Charisma": -1, "Intelligence": -1},
+    "Arcane Blood": {"Magic Aptitude": +1, "Intelligence": +1, "Strength": -1, "Tech Aptitude": -1},
+    "Raised by Orcs": {"Strength": +1, "Melee": +1, "Charisma": -1, "Intelligence": -1},
+    "Child of a Hero": {"All Attributes": +1, "Charisma": -2},
+    "Only Child": {"Intelligence": +1, "Strength": -1, "Wealth": +10},
+    "Moon Child": {"Magic Aptitude (Night)": +2, "Magic Aptitude (Day)": -2, "Perception": +1},
+    "Dark Elf": {"Intelligence": +1, "Charisma": -1, "Magic Resistance": +10},
+    "Tinker": {"Tech Aptitude": +2, "Intelligence": +1, "Magic Aptitude": -1, "Beauty": -1},
+    "Beastmaster": {"Strength": +1, "Dexterity": +1, "Intelligence": -1, "Charisma": -1},
+    "Feral Child": {"Strength": +2, "Intelligence": -2, "Melee": +1},
+    "Escaped Experiment": {"Any Attribute": +1, "Tech Aptitude": +1, "Charisma": -2, "Willpower": -1},
+    "Forest Dweller": {"Dexterity": +1, "Perception": +1, "Strength": -1, "Intelligence": -1},
+    "Desert Nomad": {"Constitution": +1, "Dexterity": +1, "Intelligence": -1, "Charisma": -1},
+    "Technologist": {"Tech Aptitude": +2, "Intelligence": +1, "Magic Aptitude": -2},
+    "Magickal Prodigy": {"Magic Aptitude": +2, "Tech Aptitude": -1, "Intelligence": +1, "Constitution": -1},
+    "Half-Blood": {"Any Attribute": +1, "Beauty": -2},
+    "Sea Farer": {"Constitution": +1, "Dexterity": +1, "Strength": -1, "Intelligence": -1},
+    "Criminal Past": {"Dexterity": +1, "Prowling": +1, "Charisma": -1, "Beauty": -1},
+    "Wanderer": {"Perception": +1, "Willpower": +1, "Strength": -1, "Charisma": -1},
+    "Merchant": {"Charisma": +2, "Haggle": +1, "Strength": -1, "Constitution": -1},
+    "Exiled Prince": {"Intelligence": +1, "Charisma": +1, "Strength": -1, "Dexterity": -1},
+    "Battle Hardened": {"Strength": +2, "Intelligence": -2, "Melee": +1},
+    "Witch's Apprentice": {"Magic Aptitude": +1, "Willpower": +1, "Dexterity": -1, "Strength": -1},
+    "Outcast": {"Perception": +1, "Willpower": +1, "Charisma": -1, "Beauty": -1},
+    "Engineer": {"Tech Aptitude": +2, "Intelligence": +1, "Magic Aptitude": -1, "Beauty": -1},
+    "Spy": {"Dexterity": +1, "Perception": +1, "Charisma": -1, "Willpower": -1},
+    "Scholar of Magick": {"Magic Aptitude": +2, "Intelligence": +1, "Tech Aptitude": -1, "Strength": -1},
+    "Gambler": {"Perception": +1, "Luck": +1, "Intelligence": -1, "Willpower": -1},
+    "Farmer": {"Strength": +1, "Constitution": +1, "Intelligence": -1, "Beauty": -1},
+    "Lumberjack": {"Strength": +2, "Intelligence": -1, "Beauty": -1},
+    "Debutant": {"Charisma": +2, "Strength": -1, "Dexterity": -1}
+}
+
+def create_character(name, race, char_class, gender, background):
+    if race not in races:
+        raise ValueError(f"Invalid race: {race}")
+    if char_class not in classes:
+        raise ValueError(f"Invalid class: {char_class}")
+    if background not in backgrounds:
+        raise ValueError(f"Invalid background: {background}")
+    
+    if background == "Assassin" and gender not in ['Male']:
+        raise ValueError("Assassin background is restricted to male characters.")
+    
+    if background == "Noble" and race not in ['Human']:
+        raise ValueError("Noble background is restricted to human characters.")
+    
+    if background == "Charlatan" and gender not in ['Female']:
+        raise ValueError("Charlatan background is restricted to female characters.")
+    
+    if background == "Debutant" and char_class not in ['Fighter', 'Thief']:
+        raise ValueError("Debutant background is restricted to Fighter and Thief classes.")
+    
+    character_stats = {
+        "Name": name,
+        "Race": race,
+        "Class": char_class,
+        "Gender": gender,
+        "Background": background
+    }
+    
+    # Initialize attributes
+    attributes = {
+        "Strength": 5,
+        "Dexterity": 5,
+        "Intelligence": 5,
+        "Willpower": 5,
+        "Perception": 5,
+        "Constitution": 5,
+        "Charisma": 5,
+        "Beauty": 5,
+        "Magic Aptitude": 5,
+        "Tech Aptitude": 5,
+        "Prowling": 0,
+        "Melee": 0,
+        "Haggle": 0,
+        "Luck": 0,
+        "Magic Resistance": 0,
+        "Beastmastery": 0
+    }
+    
+    # Apply background effects
+    if background in backgrounds:
+        for stat, change in backgrounds[background].items():
+            if stat in attributes:
+                attributes[stat] += change
+    
+    character_stats.update(attributes)
+    return character_stats
+
+# Example usage
+name = "Aric Swanson"
+race = "Elf"
+char_class = "Mage"
+gender = "Male"
+background = "Scholar"
+
+character = create_character(name, race, char_class, gender, background)
+print(character)
